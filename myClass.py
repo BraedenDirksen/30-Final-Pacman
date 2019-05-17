@@ -52,9 +52,6 @@ class box(myClass):
         return self.x
     def getY(self):
         return self.y
-    def updateColor(self,color):
-        self.color = color
-        self.surface.fill(self.color)
     def playerMove(self,pressedKeys,WIDTH,):
         if pressedKeys[pygame.K_a]:
             self.x -= self.spd
@@ -65,18 +62,7 @@ class box(myClass):
         if self.x + self.width >= WIDTH:
             self.x -= self.spd
         self.pos = (self.x,self.y)
-    def move(self,WIDTH,HEIGHT, spdX = 20, spdY = 20):
-        self.x += (self.xDir*spdX)
-        self.y += (self.yDir*spdY)
-        if self.x > WIDTH - self.surface.get_width():
-            self.xDir = -1
-        if self.x < 0:
-            self.xDir = 1
-        if self.y > HEIGHT - self.surface.get_height():
-            return False
-        if self.y < 0:
-           self.yDir = 1
-        self.pos = (self.x,self.y) 
+
 
 def getSpriteCollision(sprite1, sprite2):
     if sprite2.getX() <= sprite1.getX() + sprite1.getWidth() <= sprite2.getX() + sprite2.getWidth() + sprite1.getWidth() and sprite2.getY() <= sprite1.getY() + sprite1.getHeight() <= sprite2.getY() + sprite2.getHeight() + sprite1.getHeight():
