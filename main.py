@@ -25,7 +25,11 @@ pygame.display.set_caption(TITLE) # updates window title to "TITLE"
 screen.fill(GREY) # fills the entire surface with "GREY"
 clock = pygame.time.Clock() # starts a clock object to measure time
 
+
 #--- code starts here ---#
+
+
+pacman = player()
 running = True
 while running:
     for event in pygame.event.get(): # returns all inputs amd triggers into an array
