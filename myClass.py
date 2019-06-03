@@ -222,7 +222,22 @@ class ghost(myClass):
         self.pos = (self.x,self.y)
         print(self.dir)
         
-            
+class box:
+    def __init__(self,height,width,fileName,x=0,y=0,color = (0,0,0),dirx=1,diry=1):
+        self.height = height 
+        self.width = width 
+        self.dim = (self.width,self.height)
+        self.surface = pygame.Surface(self.dim,pygame.SRCALPHA, 32)
+        self.surface.fill(color)
+        self.mask = pygame.mask.from_surface(self.surface)
+        self.spd = 5
+        self.facing = "right"
+        self.moving = "right"
+        self.x = x
+        self.y = y 
+        self.pos = (self.x,self.y)
+        self.dir = 0
+
 
 
 def getSpriteCollision(sprite1, sprite2):

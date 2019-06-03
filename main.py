@@ -34,6 +34,8 @@ pacman = player(50,50,"shtuff/pacman.png",WIDTH/2-25,HEIGHT/2+40)
 background = mySprite("shtuff/maze.png")
 for i in range(1):
     ghosts.append(ghost(50,50,WIDTH/2-25,HEIGHT/2+40))#,WIDTH/2-85+(60* i),HEIGHT/2-55))
+for i in range(len(ghosts)):
+    
 running = True
 while running:
     for event in pygame.event.get(): # returns all inputs amd triggers into an array
