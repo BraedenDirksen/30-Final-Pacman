@@ -3,7 +3,7 @@ title: PyGame Template
 author: micheal zhang
 date: 2019-04-08
 '''
-import pygame
+import pygame, random
 from myClass import *
 pygame.init() # loads the pygame module comands in the program
 
@@ -29,10 +29,11 @@ clock = pygame.time.Clock() # starts a clock object to measure time
 
 #--- code starts here ---#
 
-
+ghosts = []
 pacman = player(50,50,"shtuff/pacman.png",WIDTH/2-25,HEIGHT/2+40)
 background = mySprite("shtuff/maze.png")
-ghost = ghost(50,50,WIDTH/2-25,HEIGHT/2-25)
+for i in range(1):
+    ghosts.append(ghost(50,50,WIDTH/2-25,HEIGHT/2+40))#,WIDTH/2-85+(60* i),HEIGHT/2-55))
 running = True
 while running:
     for event in pygame.event.get(): # returns all inputs amd triggers into an array
@@ -42,12 +43,16 @@ while running:
     pressedKeys = pygame.key.get_pressed()
     screen.blit(background.surface,background.getPos())
 
-    pacman.playerMove(pressedKeys,player,background)
-    pacman.mapCollision(background)
     pacman.playerDirections()
+    pacman.mapCollision(background)
+    pacman.playerMove(pressedKeys,player,background)
     screen.blit(pacman.surface,pacman.getPos())
 
-    screen.blit(ghost.surface,ghost.getPos)
+
+    for i in range(len(ghosts)):
+        ghosts[i].movement(background)
+        ghosts[i].directions()
+        screen.blit(ghosts[i].surface,ghosts[i].getPos())
 
     clock.tick(FPS) # pause the game until the FPS time is reached
     pygame.display.flip() # update the screen with changes
