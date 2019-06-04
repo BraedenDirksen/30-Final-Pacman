@@ -189,41 +189,26 @@ class ghost(myClass):
             
         self.facing = self.moving
 
-    def movement(self,sprite2):
+    def movement(self,hitBoxes,background):
         import random
+        temp = []
+        for i in range(4):
+            if hitBoxes[i].mapCollision(background) == False:
+                temp.append(i)
 
-        offset = int(sprite2.getPos()[0] - self.pos[0]),int(sprite2.getPos()[1] - self.pos[1])
-        collisionPoint = self.mask.overlap(sprite2.mask,offset)
-        if collisionPoint:
+        '''self.dir = temp[random.randrange(len(temp))]
 
-            if self.dir == 0:
-                self.x -= self.spd
-            elif self.dir == 1:
-                self.x += self.spd
-            elif self.dir == 3:
-                self.y += self.spd
-            elif self.dir == 2:
-                self.y -= self.spd
-
-            self.dir = random.randrange(3)
-
-        if self.dir == 0: #right
-            self.x += self.spd
-            self.moving = "right"
-        elif self.dir == 1:# left
-            self.x -= self.spd
-            self.moving = "left"
-        elif self.dir == 2: #down
-            self.y += self.spd
-            self.moving = "down"
-        elif self.dir == 3: #up
+        if self.dir == 0:
             self.y -= self.spd
-            self.moving = "up"
-        self.pos = (self.x,self.y)
-        print(self.dir)
+        if self.dir == 1:
+            self.y += self.spd
+        if self.dir == 2:
+            self.x += self.spd
+        if self.dir == 3:
+            self.x -= self.spd'''
         
 class box:
-    def __init__(self,height,width,fileName,x=0,y=0,color = (0,0,0),dirx=1,diry=1):
+    def __init__(self,height,width,j,x=0,y=0,color = (255,0,0)):
         self.height = height 
         self.width = width 
         self.dim = (self.width,self.height)
@@ -237,6 +222,37 @@ class box:
         self.y = y 
         self.pos = (self.x,self.y)
         self.dir = 0
+        self.positioning = j
+        if self.positioning == 3 or self.positioning == 2: 
+            self.surface = pygame.transform.rotate(self.surface, 90)
+    def getPos(self):
+        return self.pos
+    def follow(self,sprite):
+        if self.positioning == 0: #above
+            self.y = sprite.getY() - self.height
+            self.x = sprite.getX()
+        elif self.positioning == 1: #below
+            self.y = sprite.getY() + sprite.getHeight()
+            self.x = sprite.getX()
+        elif self.positioning == 2: #right
+            self.x = sprite.getX() + sprite.getWidth()
+            self.y = sprite.getY()
+        elif self.positioning == 3: #left
+            self.x = sprite.getX() - self.height
+            self.y = sprite.getY()
+
+        self.pos = (self.x,self.y)
+
+    def mapCollision(self,sprite2):
+        print("in")
+        offset = int(sprite2.getPos()[0] - self.pos[0]),int(sprite2.getPos()[1] - self.pos[1])
+        collisionPoint = self.mask.overlap(sprite2.mask,offset)
+        if collisionPoint:
+            print("True")
+            return True
+        else:
+            return False
+            print("False")
 
 
 
