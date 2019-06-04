@@ -133,12 +133,15 @@ class ghost(myClass):
         self.surface.fill(color)
         self.mask = pygame.mask.from_surface(self.surface)
         self.spd = 5
-        self.facing = "right"
-        self.moving = "right"
+        self.facing = 2
+        self.moving = 2
         self.x = x
         self.y = y 
         self.pos = (self.x,self.y)
         self.dir = 0
+        self.temp2 = 0
+        self.open = [2,3]
+        self.close = [0,1]
 
     def getPos(self):
         return self.pos
@@ -159,53 +162,79 @@ class ghost(myClass):
 
         if self.facing == self.moving:
             pass
-        elif self.facing == "right" and self.moving == "left":
+        elif self.facing == 2 and self.moving == 3:
             self.surface = pygame.transform.rotate(self.surface, 180)
-        elif self.facing == "right" and self.moving == "up":
+        elif self.facing == 2 and self.moving == 0:
             self.surface = pygame.transform.rotate(self.surface, 90)
-        elif self.facing == "right" and self.moving == "down":
+        elif self.facing == 2 and self.moving == 1:
             self.surface = pygame.transform.rotate(self.surface, 270)
 
-        elif self.facing == "up" and self.moving == "down":
+        elif self.facing == 0 and self.moving == 1:
             self.surface = pygame.transform.rotate(self.surface, 180)
-        elif self.facing == "up" and self.moving == "right":
+        elif self.facing == 0 and self.moving == 2:
             self.surface = pygame.transform.rotate(self.surface, 270)
-        elif self.facing == "up" and self.moving == "left":
+        elif self.facing == 0 and self.moving == 3:
             self.surface = pygame.transform.rotate(self.surface, 90)
 
-        elif self.facing == "left" and self.moving == "right":
+        elif self.facing == 3 and self.moving == 2:
             self.surface = pygame.transform.rotate(self.surface, 180)
-        elif self.facing == "left" and self.moving == "up":
+        elif self.facing == 3 and self.moving == 0:
             self.surface = pygame.transform.rotate(self.surface, 270)
-        elif self.facing == "left" and self.moving == "down":
+        elif self.facing == 3 and self.moving == 1:
             self.surface = pygame.transform.rotate(self.surface, 90)
 
-        elif self.facing == "down" and self.moving == "up":
+        elif self.facing == 1 and self.moving == 0:
             self.surface = pygame.transform.rotate(self.surface, 180)
-        elif self.facing == "down" and self.moving == "right":
+        elif self.facing == 1 and self.moving == 2:
             self.surface = pygame.transform.rotate(self.surface, 90)
-        elif self.facing == "down" and self.moving == "left":
+        elif self.facing == 1 and self.moving == 3:
             self.surface = pygame.transform.rotate(self.surface, 270)
             
         self.facing = self.moving
 
     def movement(self,hitBoxes,background):
         import random
-        temp = []
+        
         for i in range(4):
-            if hitBoxes[i].mapCollision(background) == False:
-                temp.append(i)
+            hitBoxes[i].mapCollision(background)
 
-        '''self.dir = temp[random.randrange(len(temp))]
+        if self.temp2 == 1:
+            self.open = []
+            self.close = []
+            for i in range(4):
+                if hitBoxes[i].mapCollision(background) == False:
+                    self.open.append(i)
+                else:
+                    self.close.append(i)
 
-        if self.dir == 0:
-            self.y -= self.spd
-        if self.dir == 1:
-            self.y += self.spd
-        if self.dir == 2:
-            self.x += self.spd
-        if self.dir == 3:
-            self.x -= self.spd'''
+            self.dir = self.open[random.randrange(len(self.open))]
+            self.temp2 = 0
+        else:
+
+            if self.dir == 0: # up
+                if hitBoxes[0].mapCollision(background) == True:
+                    self.temp2 = 1
+                self.y -= self.spd
+                self.moving = 0
+            if self.dir == 1: # down
+                if hitBoxes[1].mapCollision(background) == True:
+                    self.temp2 = 1
+                self.y += self.spd
+                self.moving = 1
+            if self.dir == 2: # right
+                if hitBoxes[2].mapCollision(background) == True:
+                    self.temp2 = 1
+                self.x += self.spd
+                self.moving = 2
+            if self.dir == 3: # left
+                if hitBoxes[3].mapCollision(background) == True:
+                    self.temp2 = 1
+                self.x -= self.spd
+                self.moving = 3
+            for i in range(len(self.close)):
+                if hitBoxes[self.close[i]].mapCollision(background) == False:
+                    self.temp2 = 1
+        self.pos = (self.x,self.y)
         
 class box:
     def __init__(self,height,width,j,x=0,y=0,color = (255,0,0)):
@@ -214,17 +243,15 @@ class box:
         self.dim = (self.width,self.height)
         self.surface = pygame.Surface(self.dim,pygame.SRCALPHA, 32)
         self.surface.fill(color)
+        self.positioning = j
+        if self.positioning == 3 or self.positioning == 2:
+            self.surface = pygame.transform.rotate(self.surface, 90)
         self.mask = pygame.mask.from_surface(self.surface)
         self.spd = 5
-        self.facing = "right"
-        self.moving = "right"
         self.x = x
-        self.y = y 
+        self.y = y
         self.pos = (self.x,self.y)
         self.dir = 0
-        self.positioning = j
-        if self.positioning == 3 or self.positioning == 2: 
-            self.surface = pygame.transform.rotate(self.surface, 90)
     def getPos(self):
         return self.pos
     def follow(self,sprite):
@@ -244,21 +271,11 @@ class box:
         self.pos = (self.x,self.y)
 
     def mapCollision(self,sprite2):
-        print("in")
         offset = int(sprite2.getPos()[0] - self.pos[0]),int(sprite2.getPos()[1] - self.pos[1])
         collisionPoint = self.mask.overlap(sprite2.mask,offset)
         if collisionPoint:
-            print("True")
+            self.surface.fill((0,255,0))
             return True
         else:
+            self.surface.fill((255,0,0))
             return False
-            print("False")
-
-
-
-def getSpriteCollision(sprite1, sprite2):
-    if sprite2.getX() <= sprite1.getX() + sprite1.getWidth() <= sprite2.getX() + sprite2.getWidth() + sprite1.getWidth() and sprite2.getY() <= sprite1.getY() + sprite1.getHeight() <= sprite2.getY() + sprite2.getHeight() + sprite1.getHeight():
-        return True
-    else:
-        return False
-
