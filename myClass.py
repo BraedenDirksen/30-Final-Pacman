@@ -140,6 +140,7 @@ class ghost(myClass):
         self.pos = (self.x,self.y)
         self.dir = 0
         self.temp2 = 0
+        self.temp = 0
         self.open = [2,3]
         self.close = [0,1]
 
@@ -194,46 +195,57 @@ class ghost(myClass):
 
     def movement(self,hitBoxes,background):
         import random
-        
+        self.open = []
+        self.close = []
         for i in range(4):
-            hitBoxes[i].mapCollision(background)
+            if hitBoxes[i].mapCollision(background) == False:
+                self.open.append(i)
+            else:
+                self.close.append(i)
 
-        if self.temp2 == 1:
-            self.open = []
-            self.close = []
-            for i in range(4):
-                if hitBoxes[i].mapCollision(background) == False:
-                    self.open.append(i)
-                else:
-                    self.close.append(i)
-
-            self.dir = self.open[random.randrange(len(self.open))]
-            self.temp2 = 0
-        else:
-
+        if self.temp2 == 0:
             if self.dir == 0: # up
                 if hitBoxes[0].mapCollision(background) == True:
                     self.temp2 = 1
                 self.y -= self.spd
                 self.moving = 0
-            if self.dir == 1: # down
+            elif self.dir == 1: # down
                 if hitBoxes[1].mapCollision(background) == True:
                     self.temp2 = 1
                 self.y += self.spd
                 self.moving = 1
-            if self.dir == 2: # right
+            elif self.dir == 2: # right
                 if hitBoxes[2].mapCollision(background) == True:
                     self.temp2 = 1
                 self.x += self.spd
                 self.moving = 2
-            if self.dir == 3: # left
+            elif self.dir == 3: # left
                 if hitBoxes[3].mapCollision(background) == True:
                     self.temp2 = 1
                 self.x -= self.spd
                 self.moving = 3
-            for i in range(len(self.close)):
-                if hitBoxes[self.close[i]].mapCollision(background) == False:
-                    self.temp2 = 1
+                
+        elif self.temp2 == 1:
+
+            self.dir = self.open[random.randrange(len(self.open))]
+            self.temp2 = 0
+
+        elif self.temp2 == 2: # not currently working(made to improve ia not neccesary)
+            self.open = []
+            self.close = []
+            for i in range(4):
+                if i == self.temp or self.dir:
+                    self.open.append(i)
+                else:
+                    self.close.append(i)
+            self.dir = self.open[random.randrange(len(self.open))]
+            self.temp2 = 0
+            
+        for i in range(len(self.close)):
+            if hitBoxes[self.close[i]].mapCollision(background) == False:  # seems to be an error here
+                self.temp = i
+                self.temp2 = 2 # not currently working
+
         self.pos = (self.x,self.y)
         
 class box:

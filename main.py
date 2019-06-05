@@ -31,13 +31,17 @@ clock = pygame.time.Clock() # starts a clock object to measure time
 
 ghosts = []
 hitBoxes = []
-pacman = player(50,50,"shtuff/pacman.png",WIDTH/2-25,HEIGHT/2+40)
-background = mySprite("shtuff/maze.png")
-for i in range(200):
-    ghosts.append(ghost(50,50,WIDTH/2-25,HEIGHT/2+40))#,WIDTH/2-85+(60* i),HEIGHT/2-55))
+#pacman = player(50,50,"shtuff/pacman.png",WIDTH/2-25,HEIGHT/2+40)
+#background = mySprite("shtuff/maze.png")
+pacman = player(50,50,"C:/Users/socce/Documents/VS CODE/30-Final-Pacman/shtuff/pacman.png",WIDTH/2-25,HEIGHT/2+40)
+background = mySprite("C:/Users/socce/Documents/VS CODE/30-Final-Pacman/shtuff/maze.png")
+for i in range(1):
+    ghosts.append(ghost(50,50,WIDTH/2-25,HEIGHT/2-150))#,WIDTH/2-85+(60* i),HEIGHT/2-55))
 
+hitBoxSize = 15
+hitBoxlength = 50
 for i in range(len(ghosts)):
-        hitBoxes.append([box(15,50,0),box(15,50,1),box(15,50,2),box(15,50,3)])
+        hitBoxes.append([box(hitBoxSize,hitBoxlength,0),box(hitBoxSize,hitBoxlength,1),box(hitBoxSize,hitBoxlength,2),box(hitBoxSize,hitBoxlength,3)])
     
 running = True
 while running:
@@ -61,10 +65,6 @@ while running:
         for j in range(4):
             hitBoxes[i][j].follow(ghosts[i])
             #screen.blit(hitBoxes[i][j].surface,hitBoxes[i][j].getPos())
-
-
-
-
 
 
     clock.tick(FPS) # pause the game until the FPS time is reached
