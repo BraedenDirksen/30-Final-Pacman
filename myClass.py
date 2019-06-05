@@ -132,7 +132,7 @@ class ghost(myClass):
         self.surface = pygame.Surface(self.dim,pygame.SRCALPHA, 32)
         self.surface.fill(color)
         self.mask = pygame.mask.from_surface(self.surface)
-        self.spd = 5
+        self.spd = 1
         self.facing = 2
         self.moving = 2
         self.x = x
@@ -193,15 +193,13 @@ class ghost(myClass):
             
         self.facing = self.moving
 
+    def checkSides(self,hitBoxes,background):
+        if self.dir == 0 or 1:
+            if hitBoxes[2] or hitBoxes[3] == False:
+                pass
+        
     def movement(self,hitBoxes,background):
         import random
-        self.open = []
-        self.close = []
-        for i in range(4):
-            if hitBoxes[i].mapCollision(background) == False:
-                self.open.append(i)
-            else:
-                self.close.append(i)
 
         if self.temp2 == 0:
             if self.dir == 0: # up
@@ -224,11 +222,27 @@ class ghost(myClass):
                     self.temp2 = 1
                 self.x -= self.spd
                 self.moving = 3
-                
-        elif self.temp2 == 1:
 
-            self.dir = self.open[random.randrange(len(self.open))]
-            self.temp2 = 0
+    def getOpenClose(self,hitBoxes,background):
+        for i in range(4):
+            if hitBoxes[i].mapCollision(background) == False:
+                self.open.append(i)
+            else:
+                self.close.append(i)
+
+    def choseDir(self):
+        self.dir = self.open[random.randrange(len(self.open))]
+        self.temp2 = 0
+
+
+
+'''
+            for i in range(len(self.close)): # should check if going by a open space
+                if hitBoxes[self.close[i]].mapCollision(background) == False:  # seems to be an error here
+                    self.temp = self.close[i]
+                    print(self.temp,"uwebuwfbuwbfubw")
+                    self.temp2 = 2 # not currently working
+                    break
 
         elif self.temp2 == 2: # not currently working(made to improve ia not neccesary)
             self.open = []
@@ -239,12 +253,7 @@ class ghost(myClass):
                 else:
                     self.close.append(i)
             self.dir = self.open[random.randrange(len(self.open))]
-            self.temp2 = 0
-            
-        for i in range(len(self.close)):
-            if hitBoxes[self.close[i]].mapCollision(background) == False:  # seems to be an error here
-                self.temp = i
-                self.temp2 = 2 # not currently working
+            self.temp2 = 0'''
 
         self.pos = (self.x,self.y)
         
