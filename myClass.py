@@ -132,17 +132,14 @@ class ghost(myClass):
         self.surface = pygame.Surface(self.dim,pygame.SRCALPHA, 32)
         self.surface.fill(color)
         self.mask = pygame.mask.from_surface(self.surface)
-        self.spd = 1
+        self.spd = 3
         self.facing = 2
         self.moving = 2
         self.x = x
         self.y = y 
         self.pos = (self.x,self.y)
         self.dir = 0
-        self.temp2 = 0
-        self.temp = 0
-        self.open = [2,3]
-        self.close = [0,1]
+        self.sides = 0
 
     def getPos(self):
         return self.pos
@@ -193,68 +190,89 @@ class ghost(myClass):
             
         self.facing = self.moving
 
-    def checkSides(self,hitBoxes,background):
-        if self.dir == 0 or 1:
-            if hitBoxes[2] or hitBoxes[3] == False:
-                pass
-        
-    def movement(self,hitBoxes,background):
-        import random
-
-        if self.temp2 == 0:
-            if self.dir == 0: # up
-                if hitBoxes[0].mapCollision(background) == True:
-                    self.temp2 = 1
-                self.y -= self.spd
-                self.moving = 0
-            elif self.dir == 1: # down
-                if hitBoxes[1].mapCollision(background) == True:
-                    self.temp2 = 1
-                self.y += self.spd
-                self.moving = 1
-            elif self.dir == 2: # right
-                if hitBoxes[2].mapCollision(background) == True:
-                    self.temp2 = 1
-                self.x += self.spd
-                self.moving = 2
-            elif self.dir == 3: # left
-                if hitBoxes[3].mapCollision(background) == True:
-                    self.temp2 = 1
-                self.x -= self.spd
-                self.moving = 3
-
-    def getOpenClose(self,hitBoxes,background):
-        for i in range(4):
-            if hitBoxes[i].mapCollision(background) == False:
-                self.open.append(i)
-            else:
-                self.close.append(i)
-
+    def checkSides(self,hitBoxes,background,x = 1):
+        if self.dir == 0:
+            if hitBoxes[2].mapCollision(background) == False:
+                self.open = [2]
+                if x == 1:
+                    self.open.append(0)
+                self.choseDir()
+                self.sides = 0
+            elif hitBoxes[3].mapCollision(background) == False:
+                self.open = [3]
+                if x == 1:
+                    self.open.append(0)
+                self.choseDir()
+                self.sides = 0
+        elif self.dir == 1:
+            if hitBoxes[2].mapCollision(background) == False:
+                self.open = [2]
+                if x == 1:
+                    self.open.append(1)
+                self.choseDir()
+                self.sides = 0
+            elif hitBoxes[3].mapCollision(background) == False:
+                self.open = [3]
+                if x == 1:
+                    self.open.append(1)
+                self.choseDir()
+                self.sides = 0
+        if self.dir == 2:
+            if hitBoxes[0].mapCollision(background) == False:
+                self.open = [0]
+                if x == 1:
+                    self.open.append(2)
+                self.choseDir()
+                self.sides = 0
+            elif hitBoxes[1].mapCollision(background) == False:
+                self.open = [1]
+                if x == 1:
+                    self.open.append(2)
+                self.choseDir()
+                self.sides = 0
+        elif self.dir == 3:
+            if hitBoxes[0].mapCollision(background) == False:
+                self.open = [0]
+                if x == 1:
+                    self.open.append(3)
+                self.choseDir()
+                self.sides = 0
+            elif hitBoxes[1].mapCollision(background) == False:
+                self.open = [1]
+                if x == 1:
+                    self.open.append(3)
+                self.choseDir()
+                self.sides = 0
+                
     def choseDir(self):
+        import random
         self.dir = self.open[random.randrange(len(self.open))]
-        self.temp2 = 0
 
 
-
-'''
-            for i in range(len(self.close)): # should check if going by a open space
-                if hitBoxes[self.close[i]].mapCollision(background) == False:  # seems to be an error here
-                    self.temp = self.close[i]
-                    print(self.temp,"uwebuwfbuwbfubw")
-                    self.temp2 = 2 # not currently working
-                    break
-
-        elif self.temp2 == 2: # not currently working(made to improve ia not neccesary)
-            self.open = []
-            self.close = []
-            for i in range(4):
-                if i == self.temp or self.dir:
-                    self.open.append(i)
-                else:
-                    self.close.append(i)
-            self.dir = self.open[random.randrange(len(self.open))]
-            self.temp2 = 0'''
-
+    def movement(self,hitBoxes,background):
+        self.sides += 1
+        if self.sides > 15:
+            self.checkSides(hitBoxes,background)
+        if self.dir == 0: # up
+            if hitBoxes[0].mapCollision(background) == True:
+                self.checkSides(hitBoxes,background,0)
+            self.y -= self.spd
+            self.moving = 0
+        elif self.dir == 1: # down
+            if hitBoxes[1].mapCollision(background) == True:
+                self.checkSides(hitBoxes,background,0)
+            self.y += self.spd
+            self.moving = 1
+        elif self.dir == 2: # right
+            if hitBoxes[2].mapCollision(background) == True:
+                self.checkSides(hitBoxes,background,0)
+            self.x += self.spd
+            self.moving = 2
+        elif self.dir == 3: # left
+            if hitBoxes[3].mapCollision(background) == True:
+                self.checkSides(hitBoxes,background,0)
+            self.x -= self.spd
+            self.moving = 3
         self.pos = (self.x,self.y)
         
 class box:
@@ -277,16 +295,16 @@ class box:
         return self.pos
     def follow(self,sprite):
         if self.positioning == 0: #above
-            self.y = sprite.getY() - self.height
+            self.y = sprite.getY() - 15
             self.x = sprite.getX()
         elif self.positioning == 1: #below
-            self.y = sprite.getY() + sprite.getHeight()
+            self.y = sprite.getY()
             self.x = sprite.getX()
         elif self.positioning == 2: #right
-            self.x = sprite.getX() + sprite.getWidth()
+            self.x = sprite.getX()
             self.y = sprite.getY()
         elif self.positioning == 3: #left
-            self.x = sprite.getX() - self.height
+            self.x = sprite.getX() - 15
             self.y = sprite.getY()
 
         self.pos = (self.x,self.y)
