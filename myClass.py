@@ -350,10 +350,15 @@ class pellet:
         self.dir = 0
     def getPos(self):
         return self.pos
-    def getCollisionPlayer(self,sprite2):
+    def getCollision(self,sprite2):
         offset = int(sprite2.getPos()[0] - self.pos[0]),int(sprite2.getPos()[1] - self.pos[1])
         collisionPoint = self.mask.overlap(sprite2.mask,offset)
         if collisionPoint:
             return True
         else:
             return False
+def getSpriteCollision(pos1, pos):
+    if pos[0] <= pos1[0] + 7.5 <= pos[0] + 5 + 7.5 and pos[1] <= pos1[1] + 7.5 <= pos[1] + 5 + 7.5:
+        return True
+    else:
+        return False
