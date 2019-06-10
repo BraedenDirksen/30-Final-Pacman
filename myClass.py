@@ -132,7 +132,7 @@ class ghost(myClass):
         self.surface = pygame.Surface(self.dim,pygame.SRCALPHA, 32)
         self.surface.fill(color)
         self.mask = pygame.mask.from_surface(self.surface)
-        self.spd = 3
+        self.spd = 4
         self.facing = 2
         self.moving = 2
         self.x = x
@@ -196,12 +196,16 @@ class ghost(myClass):
                 self.open = [2]
                 if x == 1:
                     self.open.append(0)
+                if hitBoxes[3].mapCollision(background) == False:
+                    self.open.append(3)
                 self.choseDir()
                 self.sides = 0
             elif hitBoxes[3].mapCollision(background) == False:
                 self.open = [3]
                 if x == 1:
                     self.open.append(0)
+                if hitBoxes[2].mapCollision(background) == False:
+                    self.open.append(2)
                 self.choseDir()
                 self.sides = 0
         elif self.dir == 1:
@@ -209,25 +213,33 @@ class ghost(myClass):
                 self.open = [2]
                 if x == 1:
                     self.open.append(1)
+                if hitBoxes[3].mapCollision(background) == False:
+                    self.open.append(3)
                 self.choseDir()
                 self.sides = 0
             elif hitBoxes[3].mapCollision(background) == False:
                 self.open = [3]
                 if x == 1:
                     self.open.append(1)
+                if hitBoxes[2].mapCollision(background) == False:
+                    self.open.append(2)
                 self.choseDir()
                 self.sides = 0
-        if self.dir == 2:
+        elif self.dir == 2:
             if hitBoxes[0].mapCollision(background) == False:
                 self.open = [0]
                 if x == 1:
                     self.open.append(2)
+                if hitBoxes[1].mapCollision(background) == False:
+                    self.open.append(1)
                 self.choseDir()
                 self.sides = 0
             elif hitBoxes[1].mapCollision(background) == False:
                 self.open = [1]
                 if x == 1:
                     self.open.append(2)
+                if hitBoxes[0].mapCollision(background) == False:
+                    self.open.append(0)
                 self.choseDir()
                 self.sides = 0
         elif self.dir == 3:
@@ -235,12 +247,16 @@ class ghost(myClass):
                 self.open = [0]
                 if x == 1:
                     self.open.append(3)
+                if hitBoxes[1].mapCollision(background) == False:
+                    self.open.append(1)
                 self.choseDir()
                 self.sides = 0
             elif hitBoxes[1].mapCollision(background) == False:
                 self.open = [1]
                 if x == 1:
                     self.open.append(3)
+                if hitBoxes[0].mapCollision(background) == False:
+                    self.open.append(0)
                 self.choseDir()
                 self.sides = 0
                 
@@ -251,7 +267,7 @@ class ghost(myClass):
 
     def movement(self,hitBoxes,background):
         self.sides += 1
-        if self.sides > 15:
+        if self.sides > 20:
             self.checkSides(hitBoxes,background)
         if self.dir == 0: # up
             if hitBoxes[0].mapCollision(background) == True:
@@ -317,4 +333,27 @@ class box:
             return True
         else:
             self.surface.fill((255,0,0))
+            return False
+
+class pellet:
+    def __init__(self,height,width,x=0,y=0):
+        self.height = height 
+        self.width = width 
+        self.dim = (self.width,self.height)
+        self.surface = pygame.Surface(self.dim,pygame.SRCALPHA, 32)
+        self.surface.fill((255,255,0))
+        self.mask = pygame.mask.from_surface(self.surface)
+        self.spd = 5
+        self.x = x
+        self.y = y
+        self.pos = (self.x,self.y)
+        self.dir = 0
+    def getPos(self):
+        return self.pos
+    def getCollisionPlayer(self,sprite2):
+        offset = int(sprite2.getPos()[0] - self.pos[0]),int(sprite2.getPos()[1] - self.pos[1])
+        collisionPoint = self.mask.overlap(sprite2.mask,offset)
+        if collisionPoint:
+            return True
+        else:
             return False
