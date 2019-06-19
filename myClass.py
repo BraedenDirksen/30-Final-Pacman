@@ -14,13 +14,13 @@ class myClass:
         self.color = color
 
 class text(myClass):
-    def __init__(self, content, font = 'Arial', fontSize = 24):
+    def __init__(self, content, font = 'Arial', fontSize = 50):
         myClass.__init__(self)
         self.fontFam = font
         self.fontSize = fontSize
         self.font = pygame.font.SysFont(self.fontFam,self.fontSize)
         self.content = content
-        self.surface = self.font.render(self.content,1,self.color)
+        self.surface = self.font.render(self.content,1,(255,255,255))
 
 class mySprite(myClass):
     def __init__(self,fileName):
@@ -86,7 +86,12 @@ class player(myClass):
                 self.y += self.spd
             if self.moving == "down":
                 self.y -= self.spd
-
+    
+    def ghostCollision(self,sprite2):
+        offset = int(sprite2.getPos()[0] - self.pos[0]),int(sprite2.getPos()[1] - self.pos[1])
+        collisionPoint = self.mask.overlap(sprite2.mask,offset)
+        if collisionPoint:
+            return True
 
     def playerDirections(self):
         if self.facing == self.moving:
@@ -191,7 +196,7 @@ class ghost(myClass):
         self.facing = self.moving
 
     def checkSides(self,hitBoxes,background,x = 1):
-        if self.dir == 0:
+        if self.dir == 0: # up
             if hitBoxes[2].mapCollision(background) == False:
                 self.open = [2]
                 if x == 1:
@@ -358,7 +363,7 @@ class pellet:
         else:
             return False
 def getSpriteCollision(pos1, pos):
-    if pos[0] <= pos1[0] + 7.5 <= pos[0] + 5 + 7.5 and pos[1] <= pos1[1] + 7.5 <= pos[1] + 5 + 7.5:
+    if pos[0] <= pos1[0] + 10 <= pos[0] + 15 + 10 and pos[1] <= pos1[1] + 10 <= pos[1] + 15 + 10:
         return True
     else:
         return False
