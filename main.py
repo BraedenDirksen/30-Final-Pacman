@@ -35,7 +35,7 @@ pellets = [] #25 X 26
 #background = mySprite("shtuff/maze.png")
 pacman = player(50,50,"C:/Users/socce/Documents/VS CODE/30-Final-Pacman/shtuff/pacman.png",WIDTH/2-25,HEIGHT/2+40)
 background = mySprite("C:/Users/socce/Documents/VS CODE/30-Final-Pacman/shtuff/maze.png")
-for i in range(3000):
+for i in range(3):
     ghosts.append(ghost(50,50,WIDTH/2-25,HEIGHT/2-150))#,WIDTH/2-85+(60* i),HEIGHT/2-55))
 
 hitBoxSize = 65
